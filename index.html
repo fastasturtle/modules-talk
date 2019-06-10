@@ -1,33 +1,164 @@
 <!doctype html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>reveal.js</title>
+  <title>reveal.js</title>
 
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/reveal.css">
-    <link rel="stylesheet" href="css/theme/white.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="css/theme/white.css">
 
-    <!-- Theme used for syntax highlighting of code -->
-    <link rel="stylesheet" href="lib/css/zenburn.css">
+  <!-- Theme used for syntax highlighting of code -->
+  <link rel="stylesheet" href="lib/css/zenburn.css">
 
-    <!-- Printing and PDF exports -->
-    <script>
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.type = 'text/css';
-        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
-        document.getElementsByTagName('head')[0].appendChild(link);
-    </script>
+  <!-- Printing and PDF exports -->
+  <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+  </script>
 </head>
 <body>
 <div class="reveal">
-    <div class="slides">
-        <section data-markdown="slides.md">
-        </section>
-    </div>
+  <div class="slides">
+    <section>
+      <h1>Modules in C++20</h1>
+    </section>
+
+    <section>
+      <h2>Modules in C++20</h2>
+
+      <ul>
+        <li>Most anticipated</li>
+        <li>Most misunderstood</li>
+        <li>Most revolutionary</li>
+        <li>
+          Doesn't change the way we write programs
+          <ul>
+            (normally)
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h1>Why modules?</h1>
+    </section>
+
+    <section>
+      <h2>Present compilation model</h2>
+
+      <ul>
+        <li>Inherited from C</li>
+        <li>Uses preprocessor for code reuse</li>
+        <li>Preprocessor doesn't know language semantics</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Issue: speed</h2>
+      <pre><code data-trim lang="c++">
+        #include &lt;iostream&gt;
+        int main() {
+            std::cout << "Hello, world!" << std::endl;
+            return 0;
+        }
+      </code></pre>
+
+      <ul>
+        <li>30k lines on my machine, preprocessed</li>
+        <li>Needs to pe parsed by the compiler</li>
+        <li>1M lines after preprocessing is not unheard of</li>
+        <li>Superlinear growth of build times
+          <ul>
+            <li>Number of TUs grows</li>
+            <li>Number of used stuff grows</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Issue: leaking names</h2>
+      <p>Some code from an stdlib implementation:</p>
+      <pre><code data-trim lang="c++">
+      template &lt;class _Tp, class _Allocator&gt;
+      inline _LIBCPP_INLINE_VISIBILITY void
+      vector&lt;_Tp, _Allocator&gt;::push_back(const_reference __x)
+      {
+          if (this->__end_ != this->__end_cap())
+          {
+              __RAII_IncreaseAnnotator __annotator(*this);
+              __alloc_traits::construct(this->__alloc(),
+                                        _VSTD::__to_raw_pointer(this->__end_), __x);
+              __annotator.__done();
+              ++this->__end_;
+          }
+          else
+              __push_back_slow_path(__x);
+      }
+      </code></pre>
+      <p>Why it's so ugly?</p>
+      <pre><code data-trim lang="c++">
+        #define annotator 1
+        class RAII_IncreaseAnnotator{};
+        #include &lt;vector&gt;
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Issue: leaking names</h2>
+
+      <ul>
+        <li>
+          All names from previous headers are in scope
+          <ul>
+            <li>Macros</li>
+            <li>Classes</li>
+            <li>Global variables</li>
+          </ul>
+        </li>
+        <li>Especially bad for library writers</li>
+        <li>Stdlib implementers can afford reserved names; others don't have this luxury</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Issue: ODR violations</h2>
+      <h3>One Definition Rule:</h3>
+      <p>
+        A variable, function, class type, enumeration type, or template shall not be defined where a prior definition is
+        necessarily reachable; <b>no diagnostic is required</b> if the prior declaration is in another
+        translation unit.
+      </p>
+      <p>(<b>shall</b> means the program is ill-formed)</p>
+    </section>
+
+    <section>
+      <h2>Issue: ODR violations</h2>
+      <pre><code data-trim lang="c++">
+        // a.cpp
+        #include "header.h"
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        // b.cpp
+        #define _NDEBUG
+        #include "header.h"
+      </code></pre>
+
+      <ul>
+        <li>This could affect member layout, object size, type properties, ...</li>
+        <li>Easy to do accidentally</li>
+      </ul>
+    </section>
+
+
+  </div>
 </div>
 
 <script src="js/reveal.js"></script>
