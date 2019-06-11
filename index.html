@@ -28,6 +28,11 @@
   <div class="slides">
     <section>
       <h1>Modules in C++20</h1>
+      <p>Dmitry Kozhevnikov</p>
+    </section>
+    
+    <section>
+    todo: sponsor slide
     </section>
 
     <section>
@@ -175,10 +180,242 @@
     </section>
 
     <section>
-      <h2></h2>
+      <h2>Simple library example</h2>
+      <pre><code data-trim lang="c++">
+        todo: example
+      </code></pre>
+      <p>todo: image</p>
+    </section>
+    
+    <section>
+      <h2>Simple library: compilation model</h2>
+      todo
     </section>
 
-
+    <section>
+      <h2>Linkage</h2>
+      <p>Controls symbol locality</p>
+      <ul>
+        <li>External linkage</li>
+        <li>Internal linkage</li>
+        <li>No linkage</li>
+      </ul>
+      
+      <p>Where to put exported symbols? Not exported?</p>
+    </section>
+    
+    <section>
+      <h2>Module linkage</h2>
+      <p>Symbol is local for the module</p>
+      <ul>
+        <li>Exported symbol: external linkage</li>
+        <li>Not exported symbol: module linkage</li>
+      </ul>
+      <p>Implemented by mangling module identity into symbol name</p>
+    </section>
+    
+    
+    <section>
+      <h2>Modular code distribution</h2>
+      <p>todo: image</p>
+    </section>
+    
+    <section>
+      <h2>Modular code distribution</h2>
+      <p>Modules are not distribution artifacts!</p>
+      
+      <ul>
+        <li>BMI depends on the compiler</li>
+        <li>BMI depends on compiler flags</li>
+        <li>Source should be distributed (similar to header files)
+        <li>
+          BMIs can be distributed in limited situations
+          <ul>
+            <li>STL for vendor-provided toolchains (Visual C++, Xcode)</li>
+            <li>Known builds inside companies</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Module partitions</h2>
+      todo
+    </section>
+    
+    <section>
+      <h2>Modules and preprocessor</h2>
+      <ul>
+        <li>Outside macros don't leak into modules</li>
+        <li>Macros defined by a module are visible right after the import</li>
+        
+        todo: code example
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Transition path</h2>
+      <ul>
+        <li>Including existing header into a module might be expensive/incorrect</li>
+        <li>Rewriting all existing code is unrealistic</li>
+      </ul>
+      <p>Two transition features are offered:</p>
+      <ul>
+        <li>Header units</li>
+        <li>Global module fragment</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Header units</h2>
+      todo
+    </section>
+    
+    <section>
+      <h2>Global module fragment</h2>
+      todo
+    </section>
+    
+    <section>
+      <h1>How fast are modules?</h1>
+    </section>
+    
+    <section>
+      <h2>How fast are modules</h2>
+      <ul>
+        <li>Many people want modules just for build time improvements</li>
+        <li>Workload for the compiler is aysmptotically reduced</li>
+        <li>Build parallelism is reduced</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Build parallelism</h2>
+      todo: image
+    </section>
+    
+    <section>
+      <h2>What build time improvements should we expect?</h2>
+      <ul>
+        <li>For clean builds</li>
+        <li>On real-world projects</li>
+        <li>On real-world hardware</li>
+        <li>For common case</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>What build time improvements should we expect?</h2>
+      <h3>50%-300% build time reduction</h3>
+      <p>Based on:</p>
+      <ul>
+        <li>Existing implementations</li>
+        <li>Experiments</li>
+        <li>Speculation</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Other build time improvements opportunities</h2>
+      <ul>
+        <li>Incremental compilation might be faster: less stuff invalidated with interface changes</li>
+        <li>Edit-and-compile cycle might be faster: imported modules could be built in parallel</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h1>Tooling story</h1>
+    </section>
+    
+    <section>
+      <h2>Build system complications</h2>
+      <ul>
+        <li>Where to look for modules?</li>
+        <li>What to compile first?</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Where to look for modules?</h2>
+      <p>Module name is spelled inside module unit:</p>
+      <ul>
+        <li>Not related to module source file name</li>
+        <li>Not related to BMI name</li>
+      </ul>
+      <p>Solutions</p>
+      <ul>
+        <li>Pass explicit mapping to the compiler</li>
+        <li>Filename-based lookup</li>
+        <li>Discovery server</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>What to compile first?</h2>
+      todo: example with changed dependencies
+    </section>
+    
+    <section>
+      <h2>What to compile first?</h2>
+      <p>Solutions:</p>
+      <ul>
+        <li>Manually specify dependencies in the build script</li>
+        <li>Pre-scan sources</li>
+        <li>Build on the fly</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Analyzers and IDEs</h2>
+      <p>Headers cause troubles</p>
+      <ul>
+        <li>In what context to analyze?</li>
+        <li>What to do with non-self-contained></li>
+        <li>What to do with diagnostics from headers</li>
+        <li>A lot of existing IDEs use modular-like optimizations for performance reasons</li>
+      </ul>
+      <p>Modules solve most of this, but might require deeper integration with compiler and build systems</p>
+    </section>
+    
+    <section>
+      <h2>Current state of implementations</h2>
+      <ul>
+        <li>
+          clang: ongoing development, experimental support available (-fmodules-ts)
+          <ul>
+            <li>Note: "Clang modules" (-fmodules) are NOT C++20 modules!
+          </ul>
+        </li>
+        <li>Visual C++: experimental support available</li>
+        <li>GCC: ongoing development in a branch</li>
+        <li>Modularized STL is not planned for C++20, some implementation exist</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Current state of build system support</h2>
+      <ul>
+        <li>build2 pioneered the effort</li>
+        <li>CMake: work in progress</li>
+        <li>Ninja: a patch has landed recently to make it possible</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Summary</h2>
+      <ul>
+        <li>Modules are accepted in C++20</li>
+        <li>More hygienic code reuse model</li>
+        <li>Build time improvements (maybe not that large)</li>
+        <li>Implementation and tooling are being worked on, but not there yet</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h1>Thank you!</h1>
+      <h2>Questions?</h2>
+    </section>
+    
   </div>
 </div>
 
