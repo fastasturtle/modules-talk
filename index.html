@@ -108,17 +108,23 @@
               __push_back_slow_path(__x);
       }
       </code></pre>
+    </section>
+      
+    <section>
       <p>Why it's so ugly?</p>
       <pre><code data-trim lang="c++">
+        //user-header.h
         #define annotator 1
         class RAII_IncreaseAnnotator{};
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        #include "user-header.h"
         #include &lt;vector&gt;
       </code></pre>
     </section>
 
     <section>
       <h2>Issue: leaking names</h2>
-
       <ul>
         <li>
           All names from previous headers are in scope
@@ -164,61 +170,102 @@
 
     <section>
       <h2>Issue: accidental dependencies</h2>
-      TODO: example
-    </section>
-
-    <section>
-      <h2>Modules: how it works</h2>
-      todo
+      <pre><code data-trim lang="c++">
+        // lib1.h
+        struct Lib1Widget{};
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        // lib2.h
+        struct Lib2Gadget{
+           Lib2Gadget(Lib1Widget const& w);
+        };
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        // main.cpp
+        #include "lib1.h"
+        #include "lib2.h"
+      </code></pre>
+      
     </section>
 
     <section>
       <h2>Modules: Hello, world!</h2>
       <pre><code data-trim lang="c++">
-        todo: example
+        import std.io;
+        int main() {
+           std::cout << "Hello, world!" << std::endl;
+        }
       </code></pre>
+    </section>
+    
+    <section>
+      <h2>Modules: Hello, world!</h2>
+      <ul>
+        <li>Contents of std.io module is parsed separately</li>    
+        <li>Parsed module interface stored into the BMI (Binary Module Interface) in compiler-specific format</li>
+        <li>Import declaration(todo:?) loads pre-parsed module</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Trivia</h2>
+      <ul>
+        <li>Dots in module name has no defined meaning</li>
+        <li>Modules are orthogonal to namespaces</li>
+        <li>Import declarations go on top of the file</li>
+        <li>
+          All relevant source information is captured:
+          <ul>
+            <li>Inline functions</li>
+            <li>Templates</li>
+            <li>Error messages</li>
+          </ul>
+        </li>
+      </ul>
     </section>
 
     <section>
-      <h2>Simple library example</h2>
+      <h2>Simple library: header version</h2>
       <pre><code data-trim lang="c++">
-        todo: example
+        // simple_lib.h
+        int foo();
+        template&lt;typename T&gt; T bar(T x) { return detail::baz(x); }
+
+        namespace detail {
+          template&lt;typename T&gt; T baz(T x) { return x + 1; }
+        }
       </code></pre>
-      <p>todo: image</p>
+      <pre><code data-trim lang="c++">
+        // simple_lib.cpp
+        #include "header.h"
+        int foo() { return 42; }
+      </code></pre>
+    </section>
+    
+    <section>
+      <h2>Simple library: modular version</h2>
+      <pre><code data-trim lang="c++">
+        // simple_lib.cppm
+        export int foo() { return 42; }
+        
+        template<typename T>
+        export T bar(T x) { return baz(x); }
+        
+        template<typename T> T baz(T x) { return; }
+      </code></pre>
     </section>
     
     <section>
       <h2>Simple library: compilation model</h2>
-      todo
+      <h3>Header-based</h3>
+      todo:image
     </section>
 
     <section>
-      <h2>Linkage</h2>
-      <p>Controls symbol locality</p>
-      <ul>
-        <li>External linkage</li>
-        <li>Internal linkage</li>
-        <li>No linkage</li>
-      </ul>
-      
-      <p>Where to put exported symbols? Not exported?</p>
-    </section>
-    
-    <section>
-      <h2>Module linkage</h2>
-      <p>Symbol is local for the module</p>
-      <ul>
-        <li>Exported symbol: external linkage</li>
-        <li>Not exported symbol: module linkage</li>
-      </ul>
-      <p>Implemented by mangling module identity into symbol name</p>
-    </section>
-    
-    
-    <section>
-      <h2>Modular code distribution</h2>
-      <p>todo: image</p>
-    </section>
+      <h2>Simple library: compilation model</h2>
+      <h3>Module-based</h3>
+      todo:image
+    </section>    
     
     <section>
       <h2>Modular code distribution</h2>
@@ -237,6 +284,45 @@
         </li>
       </ul>
     </section>
+
+    <section>
+      <h2>Modular code distribution</h2>
+      <p>todo: image</p>
+    </section>
+    
+    
+    <section>
+      <h2>Linkage</h2>
+      <p>Controls symbol locality</p>
+      <ul>
+        <li>External linkage</li>
+        <li>Internal linkage (static, unnamed namespace)</li>
+        <li>No linkage (type aliases, ...)</li>
+      </ul>
+      
+      <p>Where to put exported symbols? Not exported?</p>
+    </section>
+    
+    <section>
+      <h2>Module linkage (todo: check if this section makes sense)</h2>
+      <p>Symbol is local for the module</p>
+      <ul>
+        <li>External linkage (exported symbols)</li>
+        <li>Module linkage (not exported symbols)</li>
+        <li>Internal linkage (as before)</li>
+        <li>No linkage (as before)</li>
+      </ul>
+      <p>Module identity is mangled into symbol name</p>
+    </section>
+    
+    <section>
+      <h1>Using Modules</h1>
+    </section>
+    
+    <section>
+      <h2>Exporting and importing</h2>
+      todo
+    </section>
     
     <section>
       <h2>Module partitions</h2>
@@ -249,7 +335,30 @@
         <li>Outside macros don't leak into modules</li>
         <li>Macros defined by a module are visible right after the import</li>
         
-        todo: code example
+        TODO: two sides
+        <pre><code data-trim lang="c++">
+          // a.cppm
+          export module A;
+          #define A_MACRO
+        </code></pre>
+        
+        <pre><code data-trim lang="c++">
+          // b.cppm
+          export module B;
+          #ifdef A_MACRO
+            #define B_MACRO
+          #endif
+        </code></pre>
+
+        <pre><code data-trim lang="c++">
+          // main.cpp
+          import A;
+          import B;
+          
+          // A_MACRO is defined
+          // B_MACRO is not defined
+        </code></pre>
+        
       </ul>
     </section>
     
@@ -268,12 +377,34 @@
     
     <section>
       <h2>Header units</h2>
-      todo
+      <ul>
+        <li>Mark "good" header as module</li>
+        <li>No source code change required</li>
+        <pre><code data-trim lang="c++">
+          import normal.module;
+          import "good.h";
+        </code></pre>
+        <pre><code data-trim lang="c++">
+          #include "normal/header.h"
+          #include "good.h" //turned into import!
+        </code></pre>
+      </ul>
     </section>
     
     <section>
       <h2>Global module fragment</h2>
-      todo
+      <pre><code data-trim lang="c++">
+        module;
+        #include <windows.h>
+        #include <cstdio>
+        export module A;
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        module;
+        #include <cstdlib>
+        #include <windows.h>
+        export module B;
+      </code></pre>
     </section>
     
     <section>
@@ -352,7 +483,21 @@
     
     <section>
       <h2>What to compile first?</h2>
-      todo: example with changed dependencies
+      todo: two sides
+      <pre><code data-trim lang="c++">
+        export module A;
+        import B;
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        export module B;
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        export module A;
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        export module B;
+        import A;
+      </code></pre>
     </section>
     
     <section>
@@ -362,6 +507,16 @@
         <li>Manually specify dependencies in the build script</li>
         <li>Pre-scan sources</li>
         <li>Build on the fly</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>What to compile first?</h2>
+      <p>Preamble was introduced partly to improve pre-scanning, but:
+      <ul>
+        <li>Import declarations still affected by preprocessor</li>
+        <li>Need to figure out where it ends</li>
+        <li>Is not applicable for header units</li>
       </ul>
     </section>
     
