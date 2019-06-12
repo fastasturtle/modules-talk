@@ -32,7 +32,7 @@
     </section>
     
     <section>
-    todo: sponsor slide
+      <img src=sponsors.png/>
     </section>
 
     <section>
@@ -238,7 +238,7 @@
       <pre><code data-trim lang="c++">
         // simple_lib.cpp
         #include "header.h"
-        int foo() { return 42; }
+        int foo() { return bar(42); }
       </code></pre>
     </section>
     
@@ -246,13 +246,65 @@
       <h2>Simple library: modular version</h2>
       <pre><code data-trim lang="c++">
         // simple_lib.cppm
-        export int foo() { return 42; }
-        
-        template<typename T>
+        export module simple_lib;
+
+        template&lt;typename T&gt;
         export T bar(T x) { return baz(x); }
         
-        template<typename T> T baz(T x) { return; }
+        template&lt;typename T&gt; T baz(T x) { return x + 1; }
+
+        export int foo() { return bar(42); }        
       </code></pre>
+    </section>
+    
+    <section>
+      <h2>What we just saw?</h2>
+      <ul>
+        <li>Module interface unit</li>
+        <li>Exported declarations</li>
+        <li>Non-exported declarations</li>
+      </ul>
+    </section>
+    
+    <section>
+      <h2>Exporting and importing</h2>
+      <div class=twocolumn>
+        <div>
+          <pre><code data-trim lang="c++">
+            // module1.cppm
+            export module Module1;
+            struct S { int x; };
+            export namespace N {
+              S foo();
+            }
+            export S bar();
+          </code></pre>
+        </div>
+        <div>
+          <pre><code data-trim lang="c++">
+            // module2.cppm
+            export module Module2;
+            export import Module1;
+            export void baz() { bar(); }
+          </code></pre>
+        </div>
+      </div>
+      <pre><code data-trim lang="c++">
+        // main.cpp
+        import Module;
+        int main() {
+          N::foo(); // ok
+          auto s1 = bar(); // ok
+          s.x; // ok;
+          S s2; // error
+        }
+      </code></pre>      
+    </section>
+    
+    <section>
+      <h2>Exporting and importing</h2>
+      <pre><code data-trim lang="c++">
+      </code></pre>      
     </section>
     
     <section>
@@ -316,15 +368,6 @@
     </section>
     
     <section>
-      <h1>Using Modules</h1>
-    </section>
-    
-    <section>
-      <h2>Exporting and importing</h2>
-      todo
-    </section>
-    
-    <section>
       <h2>Module partitions</h2>
       todo
     </section>
@@ -335,20 +378,23 @@
         <li>Outside macros don't leak into modules</li>
         <li>Macros defined by a module are visible right after the import</li>
         
-        TODO: two sides
-        <pre><code data-trim lang="c++">
-          // a.cppm
-          export module A;
-          #define A_MACRO
-        </code></pre>
-        
-        <pre><code data-trim lang="c++">
-          // b.cppm
-          export module B;
-          #ifdef A_MACRO
-            #define B_MACRO
-          #endif
-        </code></pre>
+      <div class=twocolumn>
+        <div>
+          <pre><code data-trim lang="c++">
+            // a.cppm
+            export module A;
+            #define A_MACRO
+          </code></pre>
+        </div>
+        <div>
+          <pre><code data-trim lang="c++">
+            // b.cppm
+            export module B;
+            #ifdef A_MACRO
+              #define B_MACRO
+            #endif
+          </code></pre>
+        </div>
 
         <pre><code data-trim lang="c++">
           // main.cpp
