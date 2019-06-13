@@ -30,7 +30,7 @@
       <h1>Modules in C++20</h1>
       <p>Dmitry Kozhevnikov</p>
     </section>
-    
+
     <section>
       <img src="./sponsors.png" alt=""/>
     </section>
@@ -109,7 +109,7 @@
       }
       </code></pre>
     </section>
-      
+
     <section>
       <h2>Issue: leaking names</h2>
       <p>Why it's so ugly?</p>
@@ -186,7 +186,7 @@
         #include "lib1.h"
         #include "lib2.h"
       </code></pre>
-      
+
     </section>
 
     <section>
@@ -197,17 +197,13 @@
            std::cout << "Hello, world!" << std::endl;
         }
       </code></pre>
-    </section>
-    
-    <section>
-      <h2>Modules: Hello, world!</h2>
       <ul>
-        <li>Contents of std.io module is parsed separately</li>    
+        <li>Contents of std.io module is parsed separately</li>
         <li>Parsed module interface stored into the BMI (Binary Module Interface) in compiler-specific format</li>
         <li>Import declaration loads pre-parsed module</li>
       </ul>
     </section>
-    
+
     <section>
       <h2>Trivia</h2>
       <ul>
@@ -242,7 +238,7 @@
         int foo() { return bar(42); }
       </code></pre>
     </section>
-    
+
     <section>
       <h2>Simple library: modular</h2>
       <pre><code data-trim lang="c++">
@@ -257,7 +253,7 @@
         export int foo() { return bar(42); }        
       </code></pre>
     </section>
-    
+
     <section>
       <h2>Module units</h2>
       <p>Module interface unit:</p>
@@ -315,9 +311,9 @@
           s.x; // ok;
           S s2; // error
         }
-      </code></pre>      
+      </code></pre>
     </section>
-    
+
     <section>
       <h2>Header-based compilation model</h2>
       todo:image
@@ -326,12 +322,12 @@
     <section>
       <h2>Modular compilation model</h2>
       todo:image
-    </section>    
-    
+    </section>
+
     <section>
       <h2>Modular code distribution</h2>
       <p>Modules are not distribution artifacts!</p>
-      
+
       <ul>
         <li>BMI depends on the compiler</li>
         <li>BMI depends on compiler flags</li>
@@ -350,8 +346,8 @@
       <h2>Modular code distribution</h2>
       <p>todo: image</p>
     </section>
-    
-    
+
+
     <section>
       <h2>Linkage</h2>
       <p>Controls symbol locality</p>
@@ -360,10 +356,10 @@
         <li>Internal linkage (static, unnamed namespace)</li>
         <li>No linkage (type aliases, ...)</li>
       </ul>
-      
+
       <p>What about exported symbols? Not exported?</p>
     </section>
-    
+
     <section>
       <h2>Module linkage</h2>
       <p>Symbol is local for the module</p>
@@ -375,7 +371,7 @@
       </ul>
       <p>Module identity is mangled into symbol name</p>
     </section>
-    
+
     <section>
       <h2>Modules and preprocessor</h2>
       <ul>
@@ -410,9 +406,9 @@
           // B_MACRO is not defined
         </code></pre>
       </div>
-        
+
     </section>
-    
+
     <section>
       <h2>Transition path</h2>
       <ul>
@@ -425,7 +421,7 @@
         <li>Global module fragment</li>
       </ul>
     </section>
-    
+
     <section>
       <h2>Header units</h2>
       <ul>
@@ -441,8 +437,9 @@
         #include "good.h" //turned into import!
       </code></pre>
     </section>
-    
+
     <section>
+      todo
       <h2>Global module fragment</h2>
       <pre><code data-trim lang="c++">
         module;
@@ -457,11 +454,11 @@
         export module B;
       </code></pre>
     </section>
-    
-    <section>
+
+    <section class="center">
       <h1>How fast are modules?</h1>
     </section>
-    
+
     <section>
       <h2>How fast are modules</h2>
       <ul>
@@ -470,12 +467,12 @@
         <li>Build parallelism is reduced</li>
       </ul>
     </section>
-    
+
     <section>
       <h2>Build parallelism</h2>
       todo: image
     </section>
-    
+
     <section>
       <h2>What build time improvements should we expect?</h2>
       <ul>
@@ -485,7 +482,7 @@
         <li>For common case</li>
       </ul>
     </section>
-    
+
     <section>
       <h2>What build time improvements should we expect?</h2>
       <h3>50%-300% build time reduction</h3>
@@ -505,6 +502,7 @@
         <li>Heavy template-based metaprogramming</li>
         <li>A lot of header-only libraries with a single TU</li>
       </ul>
+      <p></p>
       <h2>Good for modular builds:</h2>
       <ul>
         <li>Big headers, a lot of inline code</li>
@@ -513,7 +511,7 @@
       </ul>
     </section>
 
-    
+
     <section>
       <h2>Other build time improvements opportunities</h2>
       <ul>
@@ -521,11 +519,11 @@
         <li>Edit-and-compile cycle might be faster: imported modules could be built in parallel</li>
       </ul>
     </section>
-    
-    <section>
+
+    <section class="center">
       <h1>Tooling story</h1>
     </section>
-    
+
     <section>
       <h2>Build system complications</h2>
       <ul>
@@ -533,7 +531,7 @@
         <li>What to compile first?</li>
       </ul>
     </section>
-    
+
     <section>
       <h2>Where to look for modules?</h2>
       <p>Module name is spelled inside module unit:</p>
@@ -548,58 +546,62 @@
         <li>Discovery server</li>
       </ul>
     </section>
-    
+
     <section>
-      <h2>What to compile first?</h2>
-      todo: two sides
-      <pre><code data-trim lang="c++">
-        export module A;
-        import B;
-      </code></pre>
-      <pre><code data-trim lang="c++">
-        export module B;
-      </code></pre>
-      <pre><code data-trim lang="c++">
-        export module A;
-      </code></pre>
-      <pre><code data-trim lang="c++">
-        export module B;
-        import A;
-      </code></pre>
-    </section>
-    
-    <section>
-      <h2>What to compile first?</h2>
+      <h2>What module to compile first?</h2>
+      <div class=twocolumn>
+        <div>
+          <pre><code data-trim lang="c++">
+            export module A;
+
+            import B;
+          </code></pre>
+          <pre><code data-trim lang="c++">
+            export module B;
+          </code></pre>
+        </div>
+        <div>
+          <pre><code data-trim lang="c++">
+            export module A;
+          </code></pre>
+          <pre><code data-trim lang="c++">
+            export module B;
+
+            import A;
+          </code></pre>
+        </div>
+      </div>
       <p>Solutions:</p>
       <ul>
         <li>Manually specify dependencies in the build script</li>
         <li>Pre-scan sources</li>
-        <li>Build on the fly</li>
+        <li>Build BMIs on the fly</li>
       </ul>
     </section>
-    
+
+
     <section>
-      <h2>What to compile first?</h2>
-      <p>Preamble was introduced partly to improve pre-scanning, but:
+      <h2>Module preamble</h2>
+      <p>Import declarations should be placed in the beginning.</p>
       <ul>
-        <li>Import declarations still affected by preprocessor</li>
+        <li>Still affected by preprocessor</li>
         <li>Need to figure out where it ends</li>
-        <li>Is not applicable for header units</li>
+        <li>Not applicable for header units</li>
       </ul>
     </section>
-    
+
     <section>
       <h2>Analyzers and IDEs</h2>
       <p>Headers cause troubles</p>
       <ul>
         <li>In what context to analyze?</li>
-        <li>What to do with non-self-contained></li>
+        <li>What to do with non-self-contained?</li>
         <li>What to do with diagnostics from headers</li>
         <li>A lot of existing IDEs use modular-like optimizations for performance reasons</li>
       </ul>
       <p>Modules solve most of this, but might require deeper integration with compiler and build systems</p>
     </section>
-    
+
     <section>
       <h2>Current state of implementations</h2>
       <ul>
@@ -614,7 +616,7 @@
         <li>Modularized STL is not planned for C++20, some implementation exist</li>
       </ul>
     </section>
-    
+
     <section>
       <h2>Current state of build system support</h2>
       <ul>
@@ -623,7 +625,7 @@
         <li>Ninja: a patch has landed recently to make it possible</li>
       </ul>
     </section>
-    
+
     <section>
       <h2>Summary</h2>
       <ul>
@@ -633,12 +635,12 @@
         <li>Implementation and tooling are being worked on, but not there yet</li>
       </ul>
     </section>
-    
+
     <section>
       <h1>Thank you!</h1>
       <h2>Questions?</h2>
     </section>
-    
+
   </div>
 </div>
 
