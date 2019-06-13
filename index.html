@@ -26,13 +26,13 @@
 <body>
 <div class="reveal">
   <div class="slides">
-    <section>
+    <section class="center">
       <h1>Modules in C++20</h1>
       <p>Dmitry Kozhevnikov</p>
     </section>
     
     <section>
-      <img src=sponsors.png/>
+      <img src="./sponsors.png" alt=""/>
     </section>
 
     <section>
@@ -51,7 +51,7 @@
       </ul>
     </section>
 
-    <section>
+    <section class="center">
       <h1>Why modules?</h1>
     </section>
 
@@ -111,6 +111,7 @@
     </section>
       
     <section>
+      <h2>Issue: leaking names</h2>
       <p>Why it's so ugly?</p>
       <pre><code data-trim lang="c++">
         //user-header.h
@@ -203,7 +204,7 @@
       <ul>
         <li>Contents of std.io module is parsed separately</li>    
         <li>Parsed module interface stored into the BMI (Binary Module Interface) in compiler-specific format</li>
-        <li>Import declaration(todo:?) loads pre-parsed module</li>
+        <li>Import declaration loads pre-parsed module</li>
       </ul>
     </section>
     
@@ -225,7 +226,7 @@
     </section>
 
     <section>
-      <h2>Simple library: header version</h2>
+      <h2>Simple library: header-based</h2>
       <pre><code data-trim lang="c++">
         // simple_lib.h
         int foo();
@@ -243,7 +244,7 @@
     </section>
     
     <section>
-      <h2>Simple library: modular version</h2>
+      <h2>Simple library: modular</h2>
       <pre><code data-trim lang="c++">
         // simple_lib.cppm
         export module simple_lib;
@@ -258,14 +259,30 @@
     </section>
     
     <section>
-      <h2>What we just saw?</h2>
-      <ul>
-        <li>Module interface unit</li>
-        <li>Exported declarations</li>
-        <li>Non-exported declarations</li>
-      </ul>
+      <h2>Module units</h2>
+      <p>Module interface unit:</p>
+      <pre><code data-trim lang="c++">
+        // simple_lib.cppm
+        export module simple_lib;
+
+        template&lt;typename T&gt;
+        export T bar(T x) { return baz(x); }
+
+        template&lt;typename T&gt; T baz(T x) { return x + 1; }
+
+        export int foo();
+      </code></pre>
+      <p>Module implementation unit:</p>
+      <pre><code data-trim lang="c++">
+        // simple_lib_impl.cppm
+        module simple_lib;
+        int foo() {
+          return bar(42);
+        }
+      </code></pre>
     </section>
-    
+
+
     <section>
       <h2>Exporting and importing</h2>
       <div class=twocolumn>
@@ -302,20 +319,12 @@
     </section>
     
     <section>
-      <h2>Exporting and importing</h2>
-      <pre><code data-trim lang="c++">
-      </code></pre>      
-    </section>
-    
-    <section>
-      <h2>Simple library: compilation model</h2>
-      <h3>Header-based</h3>
+      <h2>Header-based compilation model</h2>
       todo:image
     </section>
 
     <section>
-      <h2>Simple library: compilation model</h2>
-      <h3>Module-based</h3>
+      <h2>Modular compilation model</h2>
       todo:image
     </section>    
     
@@ -352,11 +361,11 @@
         <li>No linkage (type aliases, ...)</li>
       </ul>
       
-      <p>Where to put exported symbols? Not exported?</p>
+      <p>What about exported symbols? Not exported?</p>
     </section>
     
     <section>
-      <h2>Module linkage (todo: check if this section makes sense)</h2>
+      <h2>Module linkage</h2>
       <p>Symbol is local for the module</p>
       <ul>
         <li>External linkage (exported symbols)</li>
@@ -368,16 +377,12 @@
     </section>
     
     <section>
-      <h2>Module partitions</h2>
-      todo
-    </section>
-    
-    <section>
       <h2>Modules and preprocessor</h2>
       <ul>
         <li>Outside macros don't leak into modules</li>
         <li>Macros defined by a module are visible right after the import</li>
-        
+      </ul>
+
       <div class=twocolumn>
         <div>
           <pre><code data-trim lang="c++">
@@ -404,8 +409,8 @@
           // A_MACRO is defined
           // B_MACRO is not defined
         </code></pre>
+      </div>
         
-      </ul>
     </section>
     
     <section>
@@ -426,29 +431,29 @@
       <ul>
         <li>Mark "good" header as module</li>
         <li>No source code change required</li>
-        <pre><code data-trim lang="c++">
-          import normal.module;
-          import "good.h";
-        </code></pre>
-        <pre><code data-trim lang="c++">
-          #include "normal/header.h"
-          #include "good.h" //turned into import!
-        </code></pre>
       </ul>
+      <pre><code data-trim lang="c++">
+        import normal.module;
+        import "good.h";
+      </code></pre>
+      <pre><code data-trim lang="c++">
+        #include "normal/header.h"
+        #include "good.h" //turned into import!
+      </code></pre>
     </section>
     
     <section>
       <h2>Global module fragment</h2>
       <pre><code data-trim lang="c++">
         module;
-        #include <windows.h>
-        #include <cstdio>
+        #include &lt;windows.h&gt;
+        #include &lt;cstdio&gt;
         export module A;
       </code></pre>
       <pre><code data-trim lang="c++">
         module;
-        #include <cstdlib>
-        #include <windows.h>
+        #include &lt;cstdlib&gt;
+        #include &lt;windows.h&gt;
         export module B;
       </code></pre>
     </section>
@@ -491,6 +496,23 @@
         <li>Speculation</li>
       </ul>
     </section>
+
+    <section>
+      <h2>Bad for modular builds:</h2>
+      <ul>
+        <li>Small, simple headers</li>
+        <li>Little extra declarations in headers</li>
+        <li>Heavy template-based metaprogramming</li>
+        <li>A lot of header-only libraries with a single TU</li>
+      </ul>
+      <h2>Good for modular builds:</h2>
+      <ul>
+        <li>Big headers, a lot of inline code</li>
+        <li>A lot of extra declarations in headers</li>
+        <li>Constexpr-based metaprogramming</li>
+      </ul>
+    </section>
+
     
     <section>
       <h2>Other build time improvements opportunities</h2>
@@ -642,6 +664,10 @@
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
         hash: true,
+
+        center: false,
+
+        transition: 'none',
     });
 </script>
 </body>
