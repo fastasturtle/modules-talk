@@ -316,18 +316,30 @@
 
     <section>
       <h2>Header-based compilation model</h2>
-      todo:image
+      <img class="plain" src="./header-compilation.png" alt="">
+      <ul>
+        <li>Headers are included into TUs</li>
+        <li>No build step/artifacts for headers</li>
+      </ul>
     </section>
 
     <section>
       <h2>Modular compilation model</h2>
-      todo:image
+      <img class="plain" src="./module-compilation.png" alt="">
+      <ul>
+        <li>cppm: Module Translation Unit source</li>
+        <li>BMI: Binary Module Interface</li>
+        <li>Each module compiled separately, producing BMI and (possibly) object file</li>
+      </ul>
+    </section>
+
+    <section class="center">
+      <h1>Modular code distribution</h1>
+      <h2>Modules are not distribution artifacts!</h2>
     </section>
 
     <section>
-      <h2>Modular code distribution</h2>
-      <p>Modules are not distribution artifacts!</p>
-
+      <h2>Modules are not distribution artifacts!</h2>
       <ul>
         <li>BMI depends on the compiler</li>
         <li>BMI depends on compiler flags</li>
