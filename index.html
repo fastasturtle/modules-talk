@@ -26,9 +26,10 @@
 <body>
 <div class="reveal">
   <div class="slides">
-    <section class="center">
+    <section>
       <h1>Modules in C++20</h1>
       <p>Dmitry Kozhevnikov</p>
+      <img src="./jetbrains_copy.png" class="plain" alt="" width="781" height="247">
     </section>
 
     <section>
@@ -142,13 +143,12 @@
 
     <section>
       <h2>Issue: ODR violations</h2>
-      <h3>One Definition Rule:</h3>
-      <p>
-        A variable, function, class type, enumeration type, or template shall not be defined where a prior definition is
-        necessarily reachable; <b>no diagnostic is required</b> if the prior declaration is in another
-        translation unit.
-      </p>
-      <p>(<b>shall</b> means the program is ill-formed)</p>
+      <p>One Definition Rule (simplified):</p>
+      <ul>
+        <li>Only one definition in TU</li>
+        <li>All definitions across the program should be identical</li>
+        <li>Otherwise: ill-formed, no diagnostics required</li>
+      </ul>
     </section>
 
     <section>
@@ -371,15 +371,15 @@
 
     <section class="center">
       <h1>Modular code distribution</h1>
-      <h2>Modules are not distribution artifacts!</h2>
+      <h2>BMIs are not distribution artifacts!</h2>
     </section>
 
     <section>
-      <h2>Modules are not distribution artifacts!</h2>
+      <h2>BMIs are not distribution artifacts!</h2>
       <ul>
         <li>BMI depends on the compiler</li>
         <li>BMI depends on compiler flags</li>
-        <li>Source should be distributed (similar to header files)
+        <li>Interface source should be distributed (similar to header files)</li>
         <li>
           BMIs can be distributed in limited situations
           <ul>
@@ -467,11 +467,6 @@
         <li>Including existing header into a module might be expensive/incorrect</li>
         <li>Rewriting all existing code is unrealistic</li>
       </ul>
-      <p>Two transition features are offered:</p>
-      <ul>
-        <li>Header units</li>
-        <li>Global module fragment</li>
-      </ul>
     </section>
 
     <section>
@@ -513,7 +508,6 @@
     </section>
 
     <section>
-      <h2>Transition path: TLDR</h2>
       <ul>
         <li>Header units: graduate modularization of existing codebase</li>
         <li>Global module fragment: use old header in new modular code</li>
@@ -582,7 +576,7 @@
 
 
     <section>
-      <h2>Other build time improvements opportunities</h2>
+      <h2>Build time: opportunities</h2>
       <ul>
         <li>Incremental compilation might be faster: less stuff invalidated with interface changes</li>
         <li>Edit-and-compile cycle might be faster: imported modules could be built in parallel</li>
@@ -608,7 +602,7 @@
         <li>Not related to module source file name</li>
         <li>Not related to BMI name</li>
       </ul>
-      <p>Solutions</p>
+      <h3>Solutions</h3>
       <ul>
         <li>Pass explicit mapping to the compiler</li>
         <li>Filename-based lookup</li>
@@ -640,7 +634,7 @@
           </code></pre>
         </div>
       </div>
-      <p>Solutions:</p>
+      <h3>Solutions</h3>
       <ul>
         <li>Manually specify dependencies in the build script</li>
         <li>Pre-scan sources</li>
@@ -692,6 +686,7 @@
         <li>build2 pioneered the effort</li>
         <li>CMake: work in progress</li>
         <li>Ninja: a patch has landed recently to make it possible</li>
+        <li>Complicated with Make (unless explicitly specifying dependencies)</li>
       </ul>
     </section>
 
