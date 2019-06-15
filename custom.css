@@ -4,3 +4,8 @@
     grid-gap: 10px;
     text-align: left;
 }
+
+.reveal pre code {
+    font-size: 1.3em;
+    line-height: 1.2;
+}

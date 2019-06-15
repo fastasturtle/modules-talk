@@ -190,6 +190,16 @@
     </section>
 
     <section>
+      <h2>Modules are meant to improve:</h2>
+      <ul>
+        <li>Build speed</li>
+        <li>Name isolation</li>
+        <li>ODR violation prevention</li>
+        <li>Source dependencies tracking</li>
+      </ul>
+    </section>
+
+    <section>
       <h2>Modules: Hello, world!</h2>
       <pre><code data-trim lang="c++">
         import std.io;
@@ -199,13 +209,19 @@
       </code></pre>
       <ul>
         <li>Contents of std.io module is parsed separately</li>
-        <li>Parsed module interface stored into the BMI (Binary Module Interface) in compiler-specific format</li>
+        <li>Parsed module interface stored separately in compiler-specific format</li>
         <li>Import declaration loads pre-parsed module</li>
       </ul>
     </section>
 
     <section>
-      <h2>Trivia</h2>
+      <h2>Modules: Hello, world!</h2>
+      <pre><code data-trim lang="c++">
+        import std.io;
+        int main() {
+           std::cout << "Hello, world!" << std::endl;
+        }
+      </code></pre>
       <ul>
         <li>Dots in module name has no defined meaning</li>
         <li>Modules are orthogonal to namespaces</li>
@@ -226,16 +242,22 @@
       <pre><code data-trim lang="c++">
         // simple_lib.h
         int foo();
-        template&lt;typename T&gt; T bar(T x) { return detail::baz(x); }
+        template&lt;typename T&gt; T bar(T x) {
+          return detail::baz(x);
+        }
 
         namespace detail {
-          template&lt;typename T&gt; T baz(T x) { return x + 1; }
+          template&lt;typename T&gt; T baz(T x) {
+            return x + 1;
+          }
         }
       </code></pre>
       <pre><code data-trim lang="c++">
         // simple_lib.cpp
         #include "header.h"
-        int foo() { return bar(42); }
+        int foo() {
+          return bar(42);
+        }
       </code></pre>
     </section>
 
@@ -246,11 +268,17 @@
         export module simple_lib;
 
         template&lt;typename T&gt;
-        export T bar(T x) { return baz(x); }
+        export T bar(T x) {
+          return baz(x);
+        }
         
-        template&lt;typename T&gt; T baz(T x) { return x + 1; }
+        template&lt;typename T&gt; T baz(T x) {
+          return x + 1;
+        }
 
-        export int foo() { return bar(42); }        
+        export int foo() {
+          return bar(42);
+        }
       </code></pre>
     </section>
 
@@ -262,9 +290,13 @@
         export module simple_lib;
 
         template&lt;typename T&gt;
-        export T bar(T x) { return baz(x); }
+        export T bar(T x) {
+          return baz(x);
+        }
 
-        template&lt;typename T&gt; T baz(T x) { return x + 1; }
+        template&lt;typename T&gt; T baz(T x) {
+          return x + 1;
+        }
 
         export int foo();
       </code></pre>
@@ -298,14 +330,18 @@
             // module2.cppm
             export module Module2;
             export import Module1;
-            export void baz() { bar(); }
+
+            export void baz() {
+              bar();
+            }
           </code></pre>
         </div>
       </div>
       <pre><code data-trim lang="c++">
         // main.cpp
-        import Module;
+        import Module2;
         int main() {
+          baz(); // ok
           N::foo(); // ok
           auto s1 = bar(); // ok
           s.x; // ok;
@@ -413,6 +449,7 @@
             #endif
           </code></pre>
         </div>
+      </div>
 
         <pre><code data-trim lang="c++">
           // main.cpp
@@ -422,8 +459,6 @@
           // A_MACRO is defined
           // B_MACRO is not defined
         </code></pre>
-      </div>
-
     </section>
 
     <section>
@@ -701,7 +736,7 @@
         // page/copying the URL will return you to the same slide
         hash: true,
 
-        center: false,
+        center: true,
 
         transition: 'none',
     });
