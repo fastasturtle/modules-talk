@@ -356,7 +356,12 @@
 
     <section>
       <h2>Modular code distribution</h2>
-      <p>todo: image</p>
+      <ul>
+        <li>Distribute source for module interface units</li>
+        <li>Distribute compiled binaries for libraries (compiled from implementation units)</li>
+        <li>Don't distribute BMIs (except rare cases)</li>
+        <li>Modules don't solve package distribution in any way!</li>
+      </ul>
     </section>
 
 
@@ -451,7 +456,6 @@
     </section>
 
     <section>
-      todo
       <h2>Global module fragment</h2>
       <pre><code data-trim lang="c++">
         module;
@@ -465,6 +469,20 @@
         #include &lt;windows.h&gt;
         export module B;
       </code></pre>
+      <ul>
+        <li>Any header can be included</li>
+        <li>Declarations are stored separately</li>
+        <li>Unused declarations are discarded</li>
+        <li>Declarations are merged across multiple modules</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Transition path: TLDR</h2>
+      <ul>
+        <li>Header units: graduate modularization of existing codebase</li>
+        <li>Global module fragment: use old header in new modular code</li>
+      </ul>
     </section>
 
     <section class="center">
@@ -482,7 +500,11 @@
 
     <section>
       <h2>Build parallelism</h2>
-      todo: image
+      <ul>
+        <li>Pre-scanning is not parallel</li>
+        <li>Build DAG can have points of contention</li>
+        <li>Transferring BMIs across distributed builds is not free</li>
+      </ul>
     </section>
 
     <section>
