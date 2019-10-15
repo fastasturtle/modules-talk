@@ -27,47 +27,38 @@
 <div class="reveal">
   <div class="slides">
     <section>
-      <h1>Modules in C++20</h1>
-      <p>Dmitry Kozhevnikov</p>
+      <h1>Модули в C++20</h1>
+      <p>Дмитрий Кожевников</p>
       <img src="./jetbrains_copy.png" class="plain" alt="" width="781" height="247">
     </section>
 
     <section>
-      <img src="./sponsors.png" alt=""/>
-    </section>
-
-    <section>
-      <h2>Modules in C++20</h2>
+      <h2>Модули в C++20</h2>
 
       <ul>
-        <li>Most anticipated</li>
-        <li>Most misunderstood</li>
-        <li>Most revolutionary</li>
-        <li>
-          Doesn't change the way we write programs
-          <ul>
-            (normally)
-          </ul>
-        </li>
+        <li>Самая ожидаемая фича</li>
+        <li>Самая непонятся фича</li>
+        <li>Самая революционная фича</li>
+        <li>Не меняет способ написания программ</li>
       </ul>
     </section>
 
     <section class="center">
-      <h1>Why modules?</h1>
+      <h1>Зачем нужны модули?</h1>
     </section>
 
     <section>
-      <h2>Present compilation model</h2>
+      <h2>Существующая модель компиляции</h2>
 
       <ul>
-        <li>Inherited from C</li>
-        <li>Uses preprocessor for code reuse</li>
-        <li>Preprocessor doesn't know language semantics</li>
+        <li>Пришла из C</li>
+        <li>Использует препроцессор для переиспользования кода</li>
+        <li>Препроцессор не знает о семантике языка</li>
       </ul>
     </section>
 
     <section>
-      <h2>Issue: speed</h2>
+      <h2>Проблема: скорость компиляции</h2>
       <pre><code data-trim lang="c++">
         #include &lt;iostream&gt;
         int main() {
@@ -77,21 +68,21 @@
       </code></pre>
 
       <ul>
-        <li>30k lines on my machine, preprocessed</li>
-        <li>Needs to pe parsed by the compiler</li>
-        <li>1M lines after preprocessing is not unheard of</li>
-        <li>Superlinear growth of build times
+        <li>30 тысяч строчек (на моей машине)</li>
+        <li>Все 30 тысяч должны быть обработаны компилятором</li>
+        <li>Бывает миллион сточек в больших проектах</li>
+        <li>Время сборки растет нелинейно с ростом проекта:
           <ul>
-            <li>Number of TUs grows</li>
-            <li>Number of used stuff grows</li>
+            <li>Увеличивается количество TU</li>
+            <li>Увеличиваетя размер TU</li>
           </ul>
         </li>
       </ul>
     </section>
 
     <section>
-      <h2>Issue: leaking names</h2>
-      <p>Some code from an stdlib implementation:</p>
+      <h2>Проблема: протекающие имена</h2>
+      <p>Пример кода из реализации stdlib:</p>
       <pre><code data-trim lang="c++">
       template &lt;class _Tp, class _Allocator&gt;
       inline _LIBCPP_INLINE_VISIBILITY void
@@ -112,8 +103,8 @@
     </section>
 
     <section>
-      <h2>Issue: leaking names</h2>
-      <p>Why it's so ugly?</p>
+      <h2>Проблема: протекающие имена</h2>
+      <p>Почему это так ужасно?</p>
       <pre><code data-trim lang="c++">
         //user-header.h
         #define annotator 1
@@ -126,33 +117,33 @@
     </section>
 
     <section>
-      <h2>Issue: leaking names</h2>
+      <h2>Проблема: протекающие имена</h2>
       <ul>
         <li>
-          All names from previous headers are in scope
+          Все имена из ранее включенных хедеров - в зоне видимости
           <ul>
-            <li>Macros</li>
-            <li>Classes</li>
-            <li>Global variables</li>
+            <li>Макросы</li>
+            <li>Классы</li>
+            <li>Глобальные переменные</li>
           </ul>
         </li>
-        <li>Especially bad for library writers</li>
-        <li>Stdlib implementers can afford reserved names; others don't have this luxury</li>
+        <li>Особенно плохо для авторов библиотек</li>
+        <li>Авторы стандартной библиотеки могу использовать зарезерврованные имена</li>
       </ul>
     </section>
 
     <section>
-      <h2>Issue: ODR violations</h2>
-      <p>One Definition Rule (simplified):</p>
+      <h2>Проблема: нарушение ODR</h2>
+      <p>One Definition Rule (упрощенно):</p>
       <ul>
-        <li>Only one definition in TU</li>
-        <li>All definitions across the program should be identical</li>
-        <li>Otherwise: ill-formed, no diagnostics required</li>
+        <li>Только одно определение в TU</li>
+        <li>Все определения в "программе" должны быть идентичными</li>
+        <li>При нарушении: ill-formed, no diagnostics required</li>
       </ul>
     </section>
 
     <section>
-      <h2>Issue: ODR violations</h2>
+      <h2>Проблема: нарушение ODR</h2>
       <pre><code data-trim lang="c++">
         // a.cpp
         #include "header.h"
