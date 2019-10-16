@@ -1,4 +1,5 @@
 <!doctype html>
+<!--suppress HtmlRequiredLangAttribute -->
 <html>
 <head>
   <meta charset="utf-8">
@@ -16,7 +17,7 @@
 
   <!-- Printing and PDF exports -->
   <script>
-      var link = document.createElement('link');
+      const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.type = 'text/css';
       link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
@@ -37,7 +38,7 @@
 
       <ul>
         <li>Самая ожидаемая фича</li>
-        <li>Самая непонятся фича</li>
+        <li>Самая непонятая фича</li>
         <li>Самая революционная фича</li>
         <li>Не меняет способ написания программ</li>
       </ul>
@@ -128,7 +129,7 @@
           </ul>
         </li>
         <li>Особенно плохо для авторов библиотек</li>
-        <li>Авторы стандартной библиотеки могу использовать зарезерврованные имена</li>
+        <li>Авторы стандартной библиотеки могу использовать зарезервированные имена</li>
       </ul>
     </section>
 
@@ -355,7 +356,7 @@
       <img class="plain" src="./header-compilation.png" alt="">
       <ul>
         <li>Хедера включаются в TU препроцессором</li>
-        <li>Для хедеров нет отдельных правил и артифактов в системе сборки</li>
+        <li>Для хедеров нет отдельных правил и артефактов в системе сборки</li>
       </ul>
     </section>
 
@@ -393,8 +394,8 @@
     <section>
       <h2>Распространение модульного кода</h2>
       <ul>
-        <li>Исходный код - для module interface units</li>
-        <li>Скомпилированные бинарники - для библиотек (скомпилированы из implementation units)</li>
+        <li>Исходный код — для module interface units</li>
+        <li>Скомпилированные бинарники — для библиотек (скомпилированы из implementation units)</li>
         <li>Модули не помогают (и не мешают) проблеме пакетных менеджеров!</li>
       </ul>
     </section>
@@ -541,7 +542,7 @@
       <h2>Хорошо работают в модульных билдах:</h2>
       <ul>
         <li>Большие хедера, много inline кода</li>
-        <li>Много метапрограммирование на constexpr</li>
+        <li>Много метапрограммирования на constexpr</li>
       </ul>
     </section>
 
@@ -646,7 +647,7 @@
           </ul>
         </li>
         <li>Visual C++: доступна экспериментальная поддержка</li>
-        <li>GCC: ведется разарботка в бранче, близка к завершению</li>
+        <li>GCC: ведется разработка в бранче, близка к завершению</li>
         <li>Модульная STL не попала в C++20, существуют пробные реализации</li>
       </ul>
     </section>
