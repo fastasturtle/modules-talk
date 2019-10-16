@@ -493,109 +493,96 @@
 
     <section>
       <ul>
-        <li>Header units: graduate modularization of existing codebase</li>
-        <li>Global module fragment: use old header in new modular code</li>
+        <li>Header units: постепенная модуляризация существующей кодовой базы</li>
+        <li>Global module fragment: новая модульная кодовая база с использованием старых хедеров</li>
       </ul>
     </section>
 
     <section class="center">
-      <h1>How fast are modules?</h1>
+      <h1>Что с временем компиляции?</h1>
     </section>
 
     <section>
-      <h2>How fast are modules</h2>
+      <h2>Что с временем компиляции?</h2>
       <ul>
-        <li>Many people want modules just for build time improvements</li>
-        <li>Workload for the compiler is aysmptotically reduced</li>
-        <li>Build parallelism is reduced</li>
+        <li>Многие ждут модули исключительно ради ускорения билдов</li>
+        <li>Количество работы для компилятора уменьшается</li>
+        <li>Параллельность билда ухудщается</li>
       </ul>
     </section>
 
     <section>
-      <h2>Build parallelism</h2>
+      <h2>Параллельность билдов</h2>
       <ul>
-        <li>Pre-scanning is not parallel</li>
-        <li>Build DAG can have points of contention</li>
-        <li>Transferring BMIs across distributed builds is not free</li>
+        <li>Нужно анализировать текст модулей для определения зависимостей</li>
+        <li>Анализ не параллелится</li>
+        <li>Копирование BMI в распределенных билдах не бесплатное</li>
       </ul>
     </section>
 
     <section>
-      <h2>What build time improvements should we expect?</h2>
+      <h2>Каких улучшений ожидать?</h2>
+      <h3>50%-1000% уменьшение времени билда</h3>
+      <p>На основе:</p>
       <ul>
-        <li>For clean builds</li>
-        <li>On real-world projects</li>
-        <li>On real-world hardware</li>
-        <li>For common case</li>
+        <li>Существующих реализаций</li>
+        <li>Экспериментов</li>
+        <li>Спекуляций</li>
       </ul>
     </section>
 
     <section>
-      <h2>What build time improvements should we expect?</h2>
-      <h3>50%-300% build time reduction</h3>
-      <p>Based on:</p>
+      <h2>Плохо работают в модульных билдах:</h2>
       <ul>
-        <li>Existing implementations</li>
-        <li>Experiments</li>
-        <li>Speculation</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Bad for modular builds:</h2>
-      <ul>
-        <li>Small, simple headers</li>
-        <li>Little extra declarations in headers</li>
-        <li>Heavy template-based metaprogramming</li>
-        <li>A lot of header-only libraries with a single TU</li>
+        <li>Небольшие простые хедера</li>
+        <li>Много шаблонного метапрограммирования</li>
       </ul>
       <p></p>
-      <h2>Good for modular builds:</h2>
+      <h2>Хорошо работают в модульных билдах:</h2>
       <ul>
-        <li>Big headers, a lot of inline code</li>
-        <li>A lot of extra declarations in headers</li>
-        <li>Constexpr-based metaprogramming</li>
+        <li>Большие хедера, много inline кода</li>
+        <li>Много метапрограммирование на constexpr</li>
       </ul>
     </section>
 
 
     <section>
-      <h2>Build time: opportunities</h2>
+      <h2>Новые возможности для билдов:</h2>
       <ul>
-        <li>Incremental compilation might be faster: less stuff invalidated with interface changes</li>
-        <li>Edit-and-compile cycle might be faster: imported modules could be built in parallel</li>
+        <li>Ускорение инкрементальной компиляции</li>
+        <li>Параллелизм сборки одного TU</li>
       </ul>
     </section>
 
     <section class="center">
-      <h1>Tooling story</h1>
+      <h1>Тулинг</h1>
     </section>
 
     <section>
-      <h2>Build system complications</h2>
+      <h2>Сложности для систем сборки</h2>
       <ul>
-        <li>Where to look for modules?</li>
-        <li>What to compile first?</li>
+        <li>Где искать модули?</li>
+        <li>В каком порядке их компилировать?</li>
       </ul>
     </section>
 
     <section>
-      <h2>Where to look for modules?</h2>
-      <p>Module name is spelled inside module unit:</p>
+      <h2>Где искать модули?</h2>
+      <p>Имя модуля написано в исходном коде:</p>
       <ul>
-        <li>Not related to module source file name</li>
-        <li>Not related to BMI name</li>
+        <li>Не связано с именем файла с кодом</li>
+        <li>Не связано с именем файла с BMI</li>
       </ul>
-      <h3>Solutions</h3>
+      <h3>Решения:</h3>
       <ul>
-        <li>Pass explicit mapping to the compiler</li>
-        <li>Filename-based lookup</li>
-        <li>Discovery server</li>
+        <li>Договориться про стандартную схему именования (ха-ха)</li>
+        <li>Явно передавать информацию компилятору</li>
+        <li>Огранизовать общение компилятора и системы сборки</li>
       </ul>
     </section>
 
     <section>
-      <h2>What module to compile first?</h2>
+      <h2>В каком порядке компилировать модули?</h2>
       <div class=twocolumn>
         <div>
           <pre><code data-trim lang="c++">
@@ -618,75 +605,74 @@
           </code></pre>
         </div>
       </div>
-      <h3>Solutions</h3>
+      <h3>Решения</h3>
       <ul>
-        <li>Manually specify dependencies in the build script</li>
-        <li>Pre-scan sources</li>
-        <li>Build BMIs on the fly</li>
+        <li>Вручную указывать зависимости</li>
+        <li>Анализировать код перед билдом</li>
+        <li>Строить BMI на лету</li>
       </ul>
     </section>
 
 
+<!--    <section>-->
+<!--      <h2>Module preamble</h2>-->
+<!--      <p>Import declarations should be placed in the beginning.</p>-->
+<!--      <ul>-->
+<!--        <li>Still affected by preprocessor</li>-->
+<!--        <li>Need to figure out where it ends</li>-->
+<!--        <li>Not applicable for header units</li>-->
+<!--      </ul>-->
+<!--    </section>-->
+
     <section>
-      <h2>Module preamble</h2>
-      <p>Import declarations should be placed in the beginning.</p>
+      <h2>IDE и статические анализаторы</h2>
+      <p>Есть проблемы с хедерами</p>
       <ul>
-        <li>Still affected by preprocessor</li>
-        <li>Need to figure out where it ends</li>
-        <li>Not applicable for header units</li>
+        <li>В каком контексте анализировать хедера?</li>
+        <li>Что, если они не самодостаточные?</li>
+        <li>Что делать с диагностиками из чужих хедеров?</li>
+        <li>Существующие IDE используют техники оптимизаций, похожие на модули</li>
       </ul>
+      <p>Модули помогают с этим, но могут потребовать более тесной интеграции с компиляторами и системами сборки</p>
     </section>
 
     <section>
-      <h2>Analyzers and IDEs</h2>
-      <p>Headers cause troubles</p>
-      <ul>
-        <li>In what context to analyze?</li>
-        <li>What to do with non-self-contained?</li>
-        <li>What to do with diagnostics from headers</li>
-        <li>A lot of existing IDEs use modular-like optimizations for performance reasons</li>
-      </ul>
-      <p>Modules solve most of this, but might require deeper integration with compiler and build systems</p>
-    </section>
-
-    <section>
-      <h2>Current state of implementations</h2>
+      <h2>Текущий статус поддержки компиляторами</h2>
       <ul>
         <li>
-          clang: ongoing development, experimental support available (-fmodules-ts)
+          clang: в процессе разработки, доступна экспериментальная поддержка (-fmodules-ts)
           <ul>
-            <li>Note: "Clang modules" (-fmodules) are NOT C++20 modules!
+            <li>Note: "Clang modules" (-fmodules) это НЕ C++20 модули!
           </ul>
         </li>
-        <li>Visual C++: experimental support available</li>
-        <li>GCC: ongoing development in a branch</li>
-        <li>Modularized STL is not planned for C++20, some implementation exist</li>
+        <li>Visual C++: доступна экспериментальная поддержка</li>
+        <li>GCC: ведется разарботка в бранче, близка к завершению</li>
+        <li>Модульная STL не попала в C++20, существуют пробные реализации</li>
       </ul>
     </section>
 
     <section>
-      <h2>Current state of build system support</h2>
+      <h2>Текущий статус поддержки системами сборки</h2>
       <ul>
-        <li>build2 pioneered the effort</li>
-        <li>CMake: work in progress</li>
-        <li>Ninja: a patch has landed recently to make it possible</li>
-        <li>Complicated with Make (unless explicitly specifying dependencies)</li>
+        <li>build2 провел первые эксперименты</li>
+        <li>CMake: активная работа в процессе</li>
+        <li>Сложности с Make-based системами (если не задавать зависимости явно)</li>
       </ul>
     </section>
 
     <section>
-      <h2>Summary</h2>
+      <h2>Резюме</h2>
       <ul>
-        <li>Modules are accepted in C++20</li>
-        <li>More hygienic code reuse model</li>
-        <li>Build time improvements (maybe not that large)</li>
-        <li>Implementation and tooling are being worked on, but not there yet</li>
+        <li>Модули приняты в C++20</li>
+        <li>Более аккуратный способ переиспользовать код</li>
+        <li>Ускорение сборки (но не такое большое, как некоторые надеялись)</li>
+        <li>Авторы компиляторов и тулинга в процессе поддержки</li>
       </ul>
     </section>
 
     <section>
-      <h1>Thank you!</h1>
-      <h2>Questions?</h2>
+      <h1>Спасибо за внимание!</h1>
+      <h2>Вопросы?</h2>
     </section>
 
   </div>
