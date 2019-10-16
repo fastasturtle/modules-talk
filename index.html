@@ -191,7 +191,7 @@
     </section>
 
     <section>
-      <h2>Modules: Hello, world!</h2>
+      <h2>Модули: Hello, world!</h2>
       <pre><code data-trim lang="c++">
         import std.io;
         int main() {
@@ -199,14 +199,14 @@
         }
       </code></pre>
       <ul>
-        <li>Contents of std.io module is parsed separately</li>
-        <li>Parsed module interface stored separately in compiler-specific format</li>
-        <li>Import declaration loads pre-parsed module</li>
+        <li>Модуль std.io module парсится отдельно</li>
+        <li>Интерфейс модуля после парсинга хранится в бинарном файле</li>
+        <li>Import declarations загружают интерфейс модуля без репарса</li>
       </ul>
     </section>
 
     <section>
-      <h2>Modules: Hello, world!</h2>
+      <h2>Модули: Hello, world!</h2>
       <pre><code data-trim lang="c++">
         import std.io;
         int main() {
@@ -214,22 +214,31 @@
         }
       </code></pre>
       <ul>
-        <li>Dots in module name has no defined meaning</li>
-        <li>Modules are orthogonal to namespaces</li>
-        <li>Import declarations go on top of the file</li>
+        <li>Точки в имени модуля ничего не значат</li>
+        <li>Модули не связаны с namespaces</li>
+        <li>Import declarations должны быть в начале файла</li>
         <li>
-          All relevant source information is captured:
+          Информация в модуле эквивалентна исходному коду:
           <ul>
-            <li>Inline functions</li>
-            <li>Templates</li>
-            <li>Error messages</li>
+            <li>Inline функции</li>
+            <li>Шаблоны</li>
+            <li>Сообщения об ошибках</li>
           </ul>
         </li>
       </ul>
     </section>
 
     <section>
-      <h2>Simple library: header-based</h2>
+      <h2>Информация в модуле эквивалентна исходному коду:</h2>
+      <ul>
+        <li>Inline функции</li>
+        <li>Шаблоны</li>
+        <li>Сообщения об ошибках</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Библиотека: header-based</h2>
       <pre><code data-trim lang="c++">
         // simple_lib.h
         int foo();
@@ -253,7 +262,7 @@
     </section>
 
     <section>
-      <h2>Simple library: modular</h2>
+      <h2>Библиотека: на модулях</h2>
       <pre><code data-trim lang="c++">
         // simple_lib.cppm
         export module simple_lib;
@@ -303,7 +312,7 @@
 
 
     <section>
-      <h2>Exporting and importing</h2>
+      <h2>Экспорт и импорт</h2>
       <div class=twocolumn>
         <div>
           <pre><code data-trim lang="c++">
@@ -342,71 +351,70 @@
     </section>
 
     <section>
-      <h2>Header-based compilation model</h2>
+      <h2>Существующая модель компиляции</h2>
       <img class="plain" src="./header-compilation.png" alt="">
       <ul>
-        <li>Headers are included into TUs</li>
-        <li>No build step/artifacts for headers</li>
+        <li>Хедера включаются в TU препроцессором</li>
+        <li>Для хедеров нет отдельных правил и артифактов в системе сборки</li>
       </ul>
     </section>
 
     <section>
-      <h2>Modular compilation model</h2>
+      <h2>Модель компиляции с модулями</h2>
       <img class="plain" src="./module-compilation.png" alt="">
       <ul>
-        <li>cppm: Module Translation Unit source</li>
+        <li>cppm: исходны код Module Translation Unit</li>
         <li>BMI: Binary Module Interface</li>
-        <li>Each module compiled separately, producing BMI and (possibly) object file</li>
+        <li>Каждый модуль компилируется отдельно в BMI и (возможно) объектный файл</li>
       </ul>
     </section>
 
     <section class="center">
-      <h1>Modular code distribution</h1>
-      <h2>BMIs are not distribution artifacts!</h2>
+      <h1>Распространение модульного кода</h1>
+      <h2>BMI - не артефакты для распространения!</h2>
     </section>
 
     <section>
-      <h2>BMIs are not distribution artifacts!</h2>
+      <h2>BMI - не артефакты для распространения!</h2>
       <ul>
-        <li>BMI depends on the compiler</li>
-        <li>BMI depends on compiler flags</li>
-        <li>Interface source should be distributed (similar to header files)</li>
+        <li>BMI зависит от компилятора</li>
+        <li>BMI зависит от флагов компилятора</li>
+        <li>Распространяться должен исходный код интерфейса модуля </li>
         <li>
-          BMIs can be distributed in limited situations
+          BMIs можно распространять в особых ситуациях
           <ul>
-            <li>STL for vendor-provided toolchains (Visual C++, Xcode)</li>
-            <li>Known builds inside companies</li>
+            <li>Стандартная библиотека вместе с тулчейном (Visual C++, Xcode)</li>
+            <li>BMI для фиксированного окружения внутри компании</li>
           </ul>
         </li>
       </ul>
     </section>
 
     <section>
-      <h2>Modular code distribution</h2>
+      <h2>Распространение модульного кода</h2>
       <ul>
-        <li>Distribute source for module interface units</li>
-        <li>Distribute compiled binaries for libraries (compiled from implementation units)</li>
-        <li>Don't distribute BMIs (except rare cases)</li>
-        <li>Modules don't solve package distribution in any way!</li>
+        <li>Исходный код - для module interface units</li>
+        <li>Скомпилированные бинарники - для библиотек (скомпилированы из implementation units)</li>
+        <li>Модули не помогают (и не мешают) проблеме пакетных менеджеров!</li>
       </ul>
     </section>
 
 
     <section>
       <h2>Linkage</h2>
-      <p>Controls symbol locality</p>
+      <p>Контролирует локальность символа</p>
       <ul>
         <li>External linkage</li>
         <li>Internal linkage (static, unnamed namespace)</li>
         <li>No linkage (type aliases, ...)</li>
       </ul>
 
-      <p>What about exported symbols? Not exported?</p>
+      <p>Что делать с символами из модулей?</p>
     </section>
 
     <section>
       <h2>Module linkage</h2>
-      <p>Symbol is local for the module</p>
+      <p>Символ виден внутри модуля</p>
       <ul>
         <li>External linkage (exported symbols)</li>
         <li>Module linkage (not exported symbols)</li>
@@ -417,63 +425,55 @@
     </section>
 
     <section>
-      <h2>Modules and preprocessor</h2>
+      <h2>Модули и препроцессор</h2>
       <ul>
-        <li>Outside macros don't leak into modules</li>
-        <li>Macros defined by a module are visible right after the import</li>
+        <li>Существующие макросы не влияют на компиляцию модуля</li>
+        <li>
+          Макросы из модуля не экспортируются
+          <ul>
+            <li>См. далее про исключение</li>
+          </ul>
+        </li>
       </ul>
 
-      <div class=twocolumn>
-        <div>
-          <pre><code data-trim lang="c++">
-            // a.cppm
-            export module A;
-            #define A_MACRO
-          </code></pre>
-        </div>
-        <div>
-          <pre><code data-trim lang="c++">
-            // b.cppm
-            export module B;
-            #ifdef A_MACRO
-              #define B_MACRO
+      <pre><code data-trim lang="c++">
+            // M.cppm
+            export module M;
+            #ifdef A
+              #define B
             #endif
+            // A и B не определены
           </code></pre>
-        </div>
-      </div>
 
-        <pre><code data-trim lang="c++">
+      <pre><code data-trim lang="c++">
           // main.cpp
-          import A;
-          import B;
-          
-          // A_MACRO is defined
-          // B_MACRO is not defined
+          #define A
+          import M;
+
+          // B не определен
         </code></pre>
     </section>
 
     <section>
-      <h2>Transition path</h2>
+      <h2>Переходный путь</h2>
       <ul>
-        <li>Including existing header into a module might be expensive/incorrect</li>
-        <li>Rewriting all existing code is unrealistic</li>
+        <li>Включить существующий header в модуль - скорее всего, некорректно</li>
+        <li>Переписать весь код на модули - нереалистично</li>
       </ul>
     </section>
 
     <section>
       <h2>Header units</h2>
       <ul>
-        <li>Mark "good" header as module</li>
-        <li>No source code change required</li>
+        <li>Пометить "хорошие" хедеры как модули</li>
+        <li>Не требует изменений исходного кода</li>
+        <li>Все символы экспортируются</li>
       </ul>
       <pre><code data-trim lang="c++">
         import normal.module;
-        import "good.h";
+        import &le;vector&ge;
       </code></pre>
-      <pre><code data-trim lang="c++">
-        #include "normal/header.h"
-        #include "good.h" //turned into import!
-      </code></pre>
+      Все хедера стандартной библиотеки - "хорошие"
     </section>
 
     <section>
@@ -481,20 +481,13 @@
       <pre><code data-trim lang="c++">
         module;
         #include &lt;windows.h&gt;
-        #include &lt;cstdio&gt;
-        export module A;
-      </code></pre>
-      <pre><code data-trim lang="c++">
-        module;
-        #include &lt;cstdlib&gt;
-        #include &lt;windows.h&gt;
-        export module B;
+        export module WinStuff;
+        export HRESULT DoStuff(HANDLE h);
+        export using MessageBox;
       </code></pre>
       <ul>
-        <li>Any header can be included</li>
-        <li>Declarations are stored separately</li>
-        <li>Unused declarations are discarded</li>
-        <li>Declarations are merged across multiple modules</li>
+        <li>Можно использовать любой хедер</li>
+        <li>Ничего не экспортируется автоматически</li>
       </ul>
     </section>
 
