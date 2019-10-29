@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/theme/white.css">
 
   <!-- Theme used for syntax highlighting of code -->
-  <link rel="stylesheet" href="lib/css/zenburn.css">
+  <link rel="stylesheet" href="lib/css/qtcreator_light.css">
 
   <!-- Printing and PDF exports -->
   <script>
@@ -290,13 +290,10 @@
         export module simple_lib;
 
         template&lt;typename T&gt;
-        export T bar(T x) {
-          return baz(x);
-        }
+        export T bar(T x) { return baz(x); }
 
-        template&lt;typename T&gt; T baz(T x) {
-          return x + 1;
-        }
+        template&lt;typename T&gt; T
+        baz(T x) { return x + 1; }
 
         export int foo();
       </code></pre>
