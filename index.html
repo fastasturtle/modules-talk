@@ -344,7 +344,7 @@
           baz(); // ok
           N::foo(); // ok
           auto s1 = bar(); // ok
-          s.x; // ok;
+          s1.x; // ok;
           S s2; // error
         }
       </code></pre>
@@ -483,7 +483,7 @@
         #include &lt;windows.h&gt;
         export module WinStuff;
         export HRESULT DoStuff(HANDLE h);
-        export using MessageBox;
+        export using MessageBox; // MessageBoxW =)
       </code></pre>
       <ul>
         <li>Можно использовать любой хедер</li>
@@ -503,7 +503,7 @@
     </section>
 
     <section>
-      <h2>Что с временем компиляции?</h2>
+      <h2>Что со временем компиляции?</h2>
       <ul>
         <li>Многие ждут модули исключительно ради ускорения билдов</li>
         <li>Количество работы для компилятора уменьшается</li>
@@ -573,6 +573,10 @@
         <li>Не связано с именем файла с кодом</li>
         <li>Не связано с именем файла с BMI</li>
       </ul>
+    </section>
+
+    <section>
+      <h2>Где искать модули?</h2>
       <h3>Решения:</h3>
       <ul>
         <li>Договориться про стандартную схему именования (ха-ха)</li>
@@ -640,14 +644,22 @@
       <h2>Текущий статус поддержки компиляторами</h2>
       <ul>
         <li>
-          clang: в процессе разработки, доступна экспериментальная поддержка (-fmodules-ts)
+          clang: -fmodules-ts
           <ul>
-            <li>Note: "Clang modules" (-fmodules) это НЕ C++20 модули!
+            <li>-fmodules это НЕ C++20 модули!
           </ul>
         </li>
-        <li>Visual C++: доступна экспериментальная поддержка</li>
-        <li>GCC: ведется разработка в бранче, близка к завершению</li>
-        <li>Модульная STL не попала в C++20, существуют пробные реализации</li>
+        <li>Visual C++: /experimental:module</li>
+        <li>GCC: cxx-modules бранч</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Стандартная библиотека</h2>
+      <ul>
+        <li>С++23</li>
+        <li>Доступны реализации от некоторых вендоров</li>
+        <li>Header Units в C++20</li>
       </ul>
     </section>
 
