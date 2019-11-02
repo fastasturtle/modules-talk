@@ -311,28 +311,24 @@
     <section>
       <h2>Экспорт и импорт</h2>
       <div class=twocolumn>
-        <div>
-          <pre><code data-trim lang="c++">
-            // module1.cppm
-            export module Module1;
-            struct S { int x; };
-            export namespace N {
-              S foo();
-            }
-            export S bar();
-          </code></pre>
-        </div>
-        <div>
-          <pre><code data-trim lang="c++">
-            // module2.cppm
-            export module Module2;
-            export import Module1;
+        <pre><code data-trim lang="c++">
+          // module1.cppm
+          export module Module1;
+          struct S { int x; };
+          export namespace N {
+            S foo();
+          }
+          export S bar();
+        </code></pre>
+        <pre><code data-trim lang="c++">
+          // module2.cppm
+          export module Module2;
+          export import Module1;
 
-            export void baz() {
-              bar();
-            }
-          </code></pre>
-        </div>
+          export void baz() {
+            bar();
+          }
+        </code></pre>
       </div>
       <pre><code data-trim lang="c++">
         // main.cpp
@@ -426,9 +422,6 @@
         <li>Существующие макросы не влияют на компиляцию модуля</li>
         <li>
           Макросы из модуля не экспортируются
-          <ul>
-            <li>См. далее про исключение</li>
-          </ul>
         </li>
       </ul>
 
@@ -438,6 +431,7 @@
             #ifdef A
               #define B
             #endif
+            #define C
             // A и B не определены
           </code></pre>
 
@@ -446,7 +440,7 @@
           #define A
           import M;
 
-          // B не определен
+          // B и C не определены
         </code></pre>
     </section>
 
@@ -468,7 +462,7 @@
       </ul>
       <pre><code data-trim lang="c++">
         import normal.module;
-        import &le;vector&ge;
+        import &lt;vector&gt;
       </code></pre>
       Все хедера стандартной библиотеки - "хорошие"
     </section>
@@ -714,6 +708,7 @@
 
         transition: 'none',
     });
+    Reveal.configure({ pdfMaxPagesPerSlide: 1 });
 </script>
 </body>
 </html>
